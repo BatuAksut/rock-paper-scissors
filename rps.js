@@ -1,9 +1,18 @@
 
-function playGame(){
+let rock= document.querySelector("#rock")
+let paper= document.querySelector("#paper")
+let scissors= document.querySelector("#scissors")
+let reset = document.querySelector("#reset")
 
-    const prompt = require('prompt-sync')(); 
+rock.addEventListener("click",playRound)
+paper.addEventListener("click",playRound)
+scissors.addEventListener("click",playRound)
+reset.addEventListener("click",resetGame)
 
 let choices =["rock","paper","scissors"]
+let humanScore=0;
+let computerScore =0;
+
 
 function getComputerChoice(){
      let random = Math.floor(Math.random()*3)
@@ -11,54 +20,52 @@ function getComputerChoice(){
 }
 
 
-function getHumanChoice() {
-    let choice = prompt("Choose rock, paper, or scissors: ").toLowerCase();;
-    return choice;
-}
 
-let humanScore=0;
-let computerScore =0;
 
-function playRound(humanChoice ,computerChoice){
-    humanChoice=getHumanChoice()
+function playRound(event){
+    if (humanScore >= 5 || computerScore >= 5) {
+        return;  
+    }
+    humanChoice=event.target.id;
     computerChoice=getComputerChoice()
+    let resultDiv = document.querySelector("#result");
 
-    console.log("You chose "+ humanChoice + " computer chose " +computerChoice)
-    if(humanChoice==computerChoice){
-        console.log("Draw")
+    if (humanChoice === computerChoice) {
+        resultDiv.innerText = `You chose ${humanChoice}. Computer chose ${computerChoice}. It's a draw!`;
+    } else if (
+        (humanChoice === "rock" && computerChoice === "scissors") ||
+        (humanChoice === "scissors" && computerChoice === "paper") ||
+        (humanChoice === "paper" && computerChoice === "rock")
+    ) {
+        humanScore++;
+        resultDiv.innerText = `You chose ${humanChoice}. Computer chose ${computerChoice}. You win!`;
+    } else {
+        computerScore++;
+        resultDiv.innerText = `You chose ${humanChoice}. Computer chose ${computerChoice}. You lose!`;
     }
-    else if(humanChoice=="rock"&&computerChoice=="paper"){
-        console.log("You lost")
-        computerScore++
+    if(humanScore<5 && computerScore<5){
+        resultDiv.innerText += `\nScore - You: ${humanScore} | Computer: ${computerScore}`;
     }
-    else if(humanChoice=="rock"&&computerChoice=="scissors"){
-        console.log("You win")
-        humanScore++
+    else if(humanScore===5){
+        resultDiv.innerText =""
+        resultDiv.innerText += ` Winner is you with ${humanScore} points`;
     }
-    else if(humanChoice=="scissors"&&computerChoice=="rock"){
-        console.log("You lost")
-        computerScore++
+    else{
+        resultDiv.innerText =""
+        resultDiv.innerText += ` Winner is computer with ${computerScore} points`;
     }
-    else if(humanChoice=="scissors"&&computerChoice=="paper"){
-        console.log("You win")
-        humanScore++
-    }
-    else if(humanChoice=="paper"&&computerChoice=="scissors"){
-        console.log("You lost")
-        computerScore++
-    }
-    else if(humanChoice=="paper"&&computerChoice=="rock"){
-        console.log("You win")
-        humanScore++
-    }
-}
-playRound()
-playRound()
-playRound()
-playRound()
-playRound()
-
-console.log("You: "+ humanScore +" Computer: " + computerScore)
+    
 }
 
-playGame()
+
+function resetGame(){
+    let resultDiv = document.querySelector("#result");
+    resultDiv.innerText =""
+    humanScore=0;
+    computerScore=0;
+
+}
+
+
+
+
